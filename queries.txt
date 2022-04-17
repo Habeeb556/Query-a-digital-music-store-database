@@ -1,37 +1,36 @@
 /* Query 1 */
-SELECT (Customer.FirstName || " " || Customer.LastName) as CustomerName, sum(Invoice.Total) as Total
-FROM Invoice
-JOIN Customer
-ON Invoice.CustomerId == Customer.CustomerId
+SELECT Artist.Name, count(InvoiceLine.TrackId) AS Total
+FROM Artist
+JOIN Album ON (Artist.ArtistId == Album.ArtistId)
+JOIN Track ON (Album.AlbumId == Track.AlbumId)
+JOIN InvoiceLine ON (InvoiceLine.TrackId == Track.TrackId)
 GROUP BY 1
-ORDER BY 2 DESC;
+ORDER BY total DESC
+LIMIT 5;
 
 /* Query 2 */
-SELECT formate.Name, count(nmusic.MediaTypeId) AS Total
-FROM MediaType AS formate
-JOIN Track AS nmusic
-ON nmusic.MediaTypeId == formate.MediaTypeId
-GROUP BY 1
-ORDER BY 2;
+SELECT BillingCountry, sum(InvoiceLine.Quantity * InvoiceLine.UnitPrice) as Total
+FROM Invoice 
+JOIN InvoiceLine ON (Invoice.InvoiceId == InvoiceLine.InvoiceId)
+JOIN Track ON (InvoiceLine.TrackId == Track.TrackId)
+JOIN Genre ON (Track.GenreId == Genre.GenreId)
+WHERE Genre.Name == "Rock"
+GROUP By BillingCountry
+ORDER By total DESC
+LIMIT 10;
 
 /* Query 3 */
 SELECT Genre.Name AS Track_Genre, count(Track.GenreId) AS Total
 FROM Genre
-JOIN Track
-ON Track.GenreId == Genre.GenreId
+JOIN Track ON (Track.GenreId == Genre.GenreId)
 GROUP BY 1
-ORDER BY 2 DESC
+ORDER BY total DESC
 LIMIT 10;
 
 /* Query 4 */
-SELECT BillingCountry, sum(InvoiceLine.Quantity * InvoiceLine.UnitPrice) as Total
-FROM Invoice 
-JOIN InvoiceLine
-ON Invoice.InvoiceId == InvoiceLine.InvoiceId
-JOIN Track
-ON InvoiceLine.TrackId == Track.TrackId
-JOIN Genre
-ON Track.GenreId == Genre.GenreId
-WHERE Genre.Name == "Rock"
-GROUP By 1
-ORDER By 2 DESC;
+SELECT (Customer.FirstName || " " || Customer.LastName) as CustomerName, sum(Invoice.Total) as Total
+FROM Invoice
+JOIN Customer ON (Invoice.CustomerId == Customer.CustomerId)
+GROUP BY 1
+ORDER BY total DESC
+LIMIT 5;
